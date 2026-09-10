@@ -1,5 +1,5 @@
-const API_BASE_URT =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+const API_BASE_URL = "http://127.0.0.1:8000/api";
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 function getToken(): string {
   return localStorage.getItem("lms-token") || "";
@@ -17,7 +17,7 @@ async function request<T>(
   path: string,
   body?: unknown,
 ): Promise<T> {
-  const res = await fetch(`${API_BASE_URT}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers: authHeaders(),
     body: body ? JSON.stringify(body) : undefined,

@@ -36,28 +36,14 @@ async function doLogin() {
   }
   loading.value = true;
   errMsg.value = "";
-  try {
-    const response = await api.login(lform.email, lform.password);
-    if (response.data.success) {
-      actions.setAuth(response.data.token, response.data.user);
-      router.push("/app/dashboard");
-    } else {
-      errMsg.value = response.message || "Login gagal, silakan coba lagi!";
-    }
-  } catch (error) {
-    const name = lform.email
-      .split("@")[0]
-      .replace(/[._-]/g, " ")
-      .replace(/\b\w/g, (c: string) => c.toUpperCase());
 
-    actions.setAuth("demo-token", {
-      id: "1",
-      name,
-      email: lform.email,
-      role: "peserta",
-    });
+  const ok = await actions.login(lform.email, lform.password);
+  if (ok) {
     router.push("/app/dashboard");
+  } else {
+    errMsg.value = "Login gagal, silakan coba lagi!";
   }
+
   loading.value = false;
 }
 
@@ -170,8 +156,7 @@ async function doRegister() {
         <!-- Register Form -->
         <div v-else class="auth-card">
           <div class="a-logo">
-            <div class="a-logo-mark">A</div>
-            <span class="a-logo-text">adhivasindo</span>
+            <img src="/public/logo2.png" alt="Adhivasindo Logo" />
           </div>
 
           <h2 class="a-h1">Buat Akun Baru</h2>
@@ -191,6 +176,18 @@ async function doRegister() {
                 class="form-input"
                 v-model="rform.name"
                 placeholder="Masukkan nama lengkap"
+              />
+            </div>
+          </div>
+          <div class="form">
+            <label for="email" class="form-label">Email</label>
+            <div class="form-wrap">
+              <ion-icon :icon="mailOutline" class="form-icon"></ion-icon>
+              <input
+                type="email"
+                class="form-input"
+                v-model="rform.email"
+                placeholder="Masukkan email"
               />
             </div>
           </div>
@@ -316,12 +313,14 @@ async function doRegister() {
       color: #0f172a;
       margin-bottom: 5px;
     }
+
     .a-sub {
       font-size: 14px;
       color: #64748b;
       margin-bottom: 28px;
       line-height: 1.55;
     }
+
     .a-err {
       background: #fee2e2;
       border: 1px solid #fca5a5;
@@ -381,6 +380,51 @@ async function doRegister() {
           background: white;
           box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
         }
+      }
+    }
+
+    .btn-a {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1a56db 0%, #6d28d9 100%);
+      color: white;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s;
+      box-shadow: 0 6px 24px rgba(26, 86, 219, 0.38);
+    }
+    .btn-a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(26, 86, 219, 0.45);
+    }
+    .btn-a:disabled {
+      opacity: 0.65;
+      cursor: default;
+      transform: none;
+    }
+
+    .a-sw {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 14px;
+      color: #64748b;
+
+      .a-sw-link {
+        color: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .a-sw-link:hover {
+        text-decoration: underline;
       }
     }
   }

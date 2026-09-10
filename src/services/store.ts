@@ -22,7 +22,7 @@ export interface Content {
   bg?: string;
 }
 
-export type readonlyContent = Readonly<Content>;
+export type ReadonlyContent = Readonly<Content>;
 
 const EMOJI_MAP: Record<string, string> = {
   PEMOGRAMAN: "💻",
@@ -61,11 +61,12 @@ export const actions = {
   async login(email: string, pass: string) {
     try {
       const res = await api.login(email, pass);
-      if (res.token && res.user) {
-        this.setAuth(res.token, res.user);
-        this.toast("Login berhasil!");
+      if (res.success && res.data?.token && res.data?.user) {
+        this.setAuth(res.data.token, res.data.user);
+        this.toast("Login berhasil!", "ok");
       } else {
-        this.toast("Login gagal: Respon tidak valid", "err");
+        this.toast(res.message || "Login gagal: Respon tidak valid", "err");
+        return false;
       }
     } catch (e) {
       this.toast(
